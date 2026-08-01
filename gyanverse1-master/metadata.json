@@ -1,0 +1,7 @@
+{
+  "name": "GyanVerse",
+  "description": "An AI-powered study assistant that answers questions and generates quizzes from your uploaded study materials. Perfect for hackathon demos and rapid prototyping.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
