@@ -118,9 +118,8 @@ async function callGemini(systemPrompt: string, userContent: string, maxRetries 
 // Import PDF.js for proper PDF text extraction
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Set the worker source for PDF.js - using local worker to match installed version
-import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url';
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+// Set the worker source for PDF.js - using CDN matching installed version (5.4.530)
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.4.530/build/pdf.worker.min.mjs';
 
 // Helper to convert base64 PDF to text using PDF.js
 async function extractTextFromBase64(base64Data: string, mimeType: string): Promise<string> {
