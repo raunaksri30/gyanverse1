@@ -133,7 +133,8 @@ async function extractTextFromBase64(base64Data: string, mimeType: string): Prom
       }
 
       // Load the PDF document
-      const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+      const loadingTask = pdfjsLib.getDocument({ data: bytes });
+      const pdf = await loadingTask.promise;
       let fullText = '';
 
       // Extract text from each page
@@ -146,15 +147,20 @@ async function extractTextFromBase64(base64Data: string, mimeType: string): Prom
         fullText += pageText + '\n\n';
       }
 
-      // Limit to prevent token overflow
-      if (fullText.length > 15000) {
-        fullText = fullText.substring(0, 15000) + '\n\n[Document truncated for length...]';
+      const trimmedText = fullText.trim();
+      if (!trimmedText) {
+        throw new Error("No readable text found in this PDF. It might be scanned or image-based.");
       }
 
-      return fullText || '[Unable to extract text from PDF]';
-    } catch (e) {
+      // Limit to prevent token overflow
+      if (trimmedText.length > 15000) {
+        return trimmedText.substring(0, 15000) + '\n\n[Document truncated for length...]';
+      }
+
+      return trimmedText;
+    } catch (e: any) {
       console.error("Error extracting text from PDF:", e);
-      return "[Error reading PDF - please try a different document]";
+      throw new Error(e?.message || "Failed to parse PDF document.");
     }
   }
 
